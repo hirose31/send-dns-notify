@@ -1,38 +1,31 @@
-SEND-DNS-NOTIFY(1)    User Contributed Perl Documentation   SEND-DNS-NOTIFY(1)
+NAME
+    send-dns-notify - send DNS NOTIFY message
 
+SYNOPSIS
+    send-dns-notify [-d] [-b *src_ipaddr*] -z *zone* -s *dns_server*
 
+    send NOTIFY message for zone "irori.org" and "example.com" to nameserver
+    10.0.0.1 and 10.0.0.2.
 
-NNAAMMEE
-       sseenndd--ddnnss--nnoottiiffyy - send DNS NOTIFY message
+      $ send-dns-notify -b 10.6.25.1 \
+        -z irori.org -z example.com -s 10.0.0.1 -s 10.0.0.2
 
-SSYYNNOOPPSSIISS
-       sseenndd--ddnnss--nnoottiiffyy [--dd] [--bb _s_r_c___i_p_a_d_d_r] --zz _z_o_n_e --ss _d_n_s___s_e_r_v_e_r
+DESCRIPTION
+    send DNS NOTIFY message
 
-       send NOTIFY message for zone "irori.org" and "example.com" to name-
-       server 10.0.0.1 and 10.0.0.2.
+OPTIONS
+    -z *zone*
+        zone name. You can specify multi zone.
 
-         $ send-dns-notify -b 10.6.25.1 \
-           -z irori.org -z example.com -s 10.0.0.1 -s 10.0.0.2
+    -s *dns_server*
+        IP address or hostname of nameserver. You can specify multi
+        nameserver.
 
-DDEESSCCRRIIPPTTIIOONN
-       send DNS NOTIFY message
+    -b *src_ipaddr*
+        source IP address of query packet. default is 0.0.0.0.
 
-OOPPTTIIOONNSS
-       --zz _z_o_n_e
-           zone name. You can specify multi zone.
+    -d  increase debug level. -d -d more verbosely.
 
-       --ss _d_n_s___s_e_r_v_e_r
-           IP address or hostname of nameserver. You can specify multi name-
-           server.
+AUTHOR
+    HIROSE, Masaaki <hirose31@gmail.com>
 
-       --bb _s_r_c___i_p_a_d_d_r
-           source IP address of query packet. default is 0.0.0.0.
-
-       --dd  increase debug level.  -d -d more verbosely.
-
-AAUUTTHHOORR
-       HIROSE, Masaaki <hirose31@gmail.com>
-
-
-
-perl v5.8.8                       2009-03-30                SEND-DNS-NOTIFY(1)
