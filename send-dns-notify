@@ -1,0 +1,129 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Carp;
+use Getopt::Long;
+Getopt::Long::Configure("bundling");
+use Pod::Usage;
+
+use Net::DNS::Resolver;
+use Net::DNS::Packet;
+
+my $Debug = 0;
+
+sub dprint (@) {
+    return unless $Debug;
+    chomp(my @m = @_);
+    print STDERR 'DEBUG: ', join(" ", @m),"\n";
+}
+
+MAIN: {
+    my @zones;
+    my @nameservers;
+    my $src_ipaddr = '0.0.0.0';
+
+    GetOptions(
+        \my %opt,
+        'debug|d+'        => \$Debug,
+        'help|h|?'        => sub{ pod2usage(-verbose=>1) },
+        'zone|z=s@'       => \@zones,
+        'nameserver|s=s@' => \@nameservers,
+        'srcaddr|b=s'     => \$src_ipaddr,
+       ) or pod2usage();
+    pod2usage(-message=>"requires both zone and nameserver")
+        unless @zones && @nameservers;
+
+    dprint "foo\n","bar\n","baz\n";
+    dprint "zone      : ".join(" ", @zones);
+    dprint "nameserver: ",join(" ", @nameservers);
+    dprint "src_ipaddr: $src_ipaddr";
+
+    my $resolver = Net::DNS::Resolver->new(
+        srcaddr     => $src_ipaddr,
+        tcp_timeout => 5,
+        udp_timeout => 5,
+        retry       => 2,
+       );
+
+    for my $nameserver (@nameservers) {
+        for my $zone (@zones) {
+            dprint "send notify for $zone to $nameserver";
+            send_notify($resolver, $zone, $nameserver);
+        }
+    }
+
+    exit 0;
+}
+
+sub send_notify {
+    my($resolver, $zone, $nameserver) = @_;
+
+    my $packet = Net::DNS::Packet->new($zone, "SOA", "In")
+        or do { carp "$!"; return; };
+
+    $packet->header->opcode("NS_NOTIFY_OP");
+    $packet->header->rd(0);
+    $packet->header->aa(1);
+    $resolver->nameservers($nameserver);
+    my $reply = $resolver->send($packet);
+    return $reply;
+}
+
+__END__
+
+=head1 NAME
+
+B<send-dns-notify> - send DNS NOTIFY message
+
+=head1 SYNOPSIS
+
+B<send-dns-notify> [B<-d>] [B<-b> I<src_ipaddr>] B<-z> I<zone> B<-s> I<dns_server>
+
+send NOTIFY message for zone "irori.org" and "example.com" to nameserver 10.0.0.1 and 10.0.0.2.
+
+  $ send-dns-notify -b 10.6.25.1 \
+    -z irori.org -z example.com -s 10.0.0.1 -s 10.0.0.2
+
+=head1 DESCRIPTION
+
+send DNS NOTIFY message
+
+=head1 OPTIONS
+
+=over 4
+
+=item B<-z> I<zone>
+
+zone name. You can specify multi zone.
+
+=item B<-s> I<dns_server>
+
+IP address or hostname of nameserver. You can specify multi nameserver.
+
+=item B<-b> I<src_ipaddr>
+
+source IP address of query packet. default is 0.0.0.0.
+
+=item B<-d>
+
+increase debug level.
+-d -d more verbosely.
+
+=back
+
+=head1 AUTHOR
+
+HIROSE, Masaaki E<lt>hirose31@gmail.comE<gt>
+
+=cut
+
+# for Emacsen
+# Local Variables:
+# mode: cperl
+# cperl-indent-level: 4
+# indent-tabs-mode: nil
+# coding: utf-8
+# End:
+
+# vi: set ts=4 sw=4 sts=0 :
