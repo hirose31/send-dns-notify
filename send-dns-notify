@@ -87,7 +87,7 @@ send NOTIFY message for zone "irori.org" and "example.com" to nameserver 10.0.0.
 
 =head1 DESCRIPTION
 
-send DNS NOTIFY message
+send DNS NOTIFY message.
 
 =head1 OPTIONS
 
@@ -111,6 +111,11 @@ increase debug level.
 -d -d more verbosely.
 
 =back
+
+=head1 SEE ALSO
+
+I borrowed routine to send NOTIFY packet from tinydns-notify. Thanks a lot!
+L<http://www.sericyb.com.au/tinydns-notify>
 
 =head1 AUTHOR
 
