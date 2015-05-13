@@ -59,7 +59,7 @@ MAIN: {
 sub send_notify {
     my($resolver, $zone, $nameserver) = @_;
 
-    my $packet = Net::DNS::Packet->new($zone, "SOA", "In")
+    my $packet = Net::DNS::Packet->new($zone, "SOA", "IN")
         or do { carp "$!"; return; };
 
     $packet->header->opcode("NS_NOTIFY_OP");
