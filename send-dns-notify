@@ -12,7 +12,7 @@ use Net::DNS::Packet;
 
 my $Debug = 0;
 
-sub dprint (@) {
+sub dprint (@) { ## no critic
     return unless $Debug;
     chomp(my @m = @_);
     print STDERR 'DEBUG: ', join(" ", @m),"\n";
@@ -34,10 +34,10 @@ MAIN: {
     pod2usage(-message=>"requires both zone and nameserver")
         unless @zones && @nameservers;
 
-    dprint "foo\n","bar\n","baz\n";
-    dprint "zone      : ".join(" ", @zones);
-    dprint "nameserver: ",join(" ", @nameservers);
-    dprint "src_ipaddr: $src_ipaddr";
+    print "zone      : ".join(" ", @zones)."\n";
+    print "nameserver: ",join(" ", @nameservers)."\n";
+    print "src_ipaddr: $src_ipaddr\n";
+    print '-'x74, "\n";
 
     my $resolver = Net::DNS::Resolver->new(
         srcaddr     => $src_ipaddr,
@@ -48,8 +48,14 @@ MAIN: {
 
     for my $nameserver (@nameservers) {
         for my $zone (@zones) {
-            dprint "send notify for $zone to $nameserver";
-            send_notify($resolver, $zone, $nameserver);
+            print "send notify for $zone to $nameserver\n";
+            my $reply = send_notify($resolver, $zone, $nameserver);
+            if ($reply) {
+                printf "received answer from %s\n", $reply->answerfrom;
+                print  $reply->string;
+            } else {
+                warn "failed to send notify";
+            }
         }
     }
 
