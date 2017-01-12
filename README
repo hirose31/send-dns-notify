@@ -11,7 +11,7 @@ SYNOPSIS
         -z irori.org -z example.com -s 10.0.0.1 -s 10.0.0.2
 
 DESCRIPTION
-    send DNS NOTIFY message
+    send DNS NOTIFY message.
 
 OPTIONS
     -z *zone*
@@ -26,6 +26,14 @@ OPTIONS
 
     -d  increase debug level. -d -d more verbosely.
 
+SEE ALSO
+    I borrowed routine to send NOTIFY packet from tinydns-notify. Thanks a
+    lot! <http://www.sericyb.com.au/tinydns-notify>
+
 AUTHOR
     HIROSE, Masaaki <hirose31@gmail.com>
+
+COPYRIGHT & LICENSE
+    This program is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself.
 
